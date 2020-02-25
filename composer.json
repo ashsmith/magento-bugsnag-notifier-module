@@ -1,0 +1,18 @@
+{
+    "name": "ashsmith/magento-bugsnag-notifier-module",
+    "description": "Bugsnag Notifier for Magento 2",
+    "type": "magento2-module",
+    "require": {
+        "bugsnag/bugsnag": "^3.19"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ash Smith",
+            "email": "hello@ashsmith.io"
+        }
+    ]
+}
