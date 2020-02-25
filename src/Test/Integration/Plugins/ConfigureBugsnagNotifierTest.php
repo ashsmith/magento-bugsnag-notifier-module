@@ -10,11 +10,18 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigureBugsnagNotifierTest extends TestCase
 {
+    private $objectManager;
+
+    protected function setUp()
+    {
+        $this->objectManager = Bootstrap::getObjectManager();
+        parent::setUp();
+    }
+
     public function testBeforeCatchExceptionIsRegistered()
     {
-        $objectManager = Bootstrap::getObjectManager();
         /** @var PluginList $pluginList */
-        $pluginList = $objectManager->create(PluginList::class);
+        $pluginList = $this->objectManager->create(PluginList::class);
         $pluginInfo = $pluginList->get(AppInterface::class);
         $this->assertSame(ConfigureBugsnagNotifier::class, $pluginInfo['bugsnag_setup']['instance']);
     }
