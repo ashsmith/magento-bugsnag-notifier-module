@@ -4,6 +4,10 @@ This module integrates the Bugsnag notifier into Magento's exception handling. A
 
 This works by using two interceptors that are placed before the `launch` and `catchException` methods on any class that implement the `Magento\Framework\AppInterface` interface.
 
+## Installation
+
+    composer require ashsmith/magento-bugsnag-notifier-module ^1.0
+
 ## Configuration
 
 To configure the Bugsnag Notifier you have two options:
