@@ -33,7 +33,6 @@ class ConfigureBugsnagNotifier
         if ($instance instanceof \Magento\Framework\App\Cron) {
             return;
         }
-
         $client = $this->bugsnag->init();
         $client->setMetaData([
             'app' => [

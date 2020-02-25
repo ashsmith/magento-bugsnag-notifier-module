@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace Ashsmith\Bugsnag\Lib;
 
-use Magento\Framework\App\Bootstrap;
 use Magento\Framework\App\DeploymentConfig;
 use Magento\Framework\Event\Manager as EventManager;
 use Bugsnag\Client;
@@ -43,17 +42,14 @@ class Bugsnag
     public function init(): Client
     {
         if (!$this->client) {
-            $apiKey = $this->deploymentConfig->get(self::CONFIG_PATH_API_KEY) ?? getenv('BUGSNAG_API_KEY');
-            $endpoint = $this->deploymentConfig->get(self::CONFIG_PATH_ENDPOINT) ?? getenv('BUGSNAG_ENDPOINT');
-            if (!$apiKey) {
+            if (!$this->getApiKey()) {
                 throw new \Exception('No bugsnag configuration has been provided.');
             }
 
-            $bugsnag = $this->clientFactory->make($apiKey, $endpoint);
-            $this->setReleaseStage($bugsnag);
-
+            $bugsnag = $this->clientFactory->make($this->getApiKey(), $this->getEndpoint());
             $bugsnag->registerCallback([$this->customerCallback, 'report'])
                 ->registerCallback([$this->magentoCallback, 'report'])
+                ->setReleaseStage($this->getReleaseStage())
                 ->startSession();
 
             // Custom event to allow developers to extend default bugsnag configuration
@@ -64,16 +60,34 @@ class Bugsnag
         return $this->client;
     }
 
-    private function setReleaseStage(Client $client)
+    private function getApiKey(): ?string
+    {
+        if ($this->deploymentConfig->get(self::CONFIG_PATH_API_KEY)) {
+            return $this->deploymentConfig->get(self::CONFIG_PATH_API_KEY);
+        }
+
+        return getenv('BUGSNAG_API_KEY') ?: null;
+    }
+
+    private function getEndpoint(): ?string
+    {
+        if ($this->deploymentConfig->get(self::CONFIG_PATH_ENDPOINT)) {
+            return $this->deploymentConfig->get(self::CONFIG_PATH_ENDPOINT);
+        }
+
+        return getenv('BUGSNAG_ENDPOINT') ?: null;
+    }
+
+    private function getReleaseStage()
     {
         // Default to setting the release stage to either production or developer
         $mageMode = getenv('MAGE_MODE') ?? $this->deploymentConfig->get('MAGE_MODE') ?? 'developer';
-        $client->setReleaseStage($mageMode == 'developer' ? 'developer' : 'production');
+        $stage = $mageMode == 'developer' ? 'developer' : 'production';
 
-        // If config or env var was provided, use that instead.
-        $releaseStage = $this->deploymentConfig->get(self::CONFIG_PATH_RELEASE_STAGE) ?? getenv('BUGSNAG_RELEASE_STAGE');
-        if ($releaseStage) {
-            $client->setReleaseStage($releaseStage);
+        if ($this->deploymentConfig->get(self::CONFIG_PATH_RELEASE_STAGE)) {
+            return $this->deploymentConfig->get(self::CONFIG_PATH_RELEASE_STAGE);
         }
+
+        return getenv('BUGSNAG_RELEASE_STAGE') ?: $stage;
     }
 }
