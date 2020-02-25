@@ -14,5 +14,13 @@
             "name": "Ash Smith",
             "email": "hello@ashsmith.io"
         }
-    ]
+    ],
+    "autoload": {
+        "files": [
+            "src/registration.php"
+        ],
+        "psr-4": {
+            "Ashsmith\\Bugsnag\\": "src"
+        }
+    }
 }
