@@ -1,0 +1,21 @@
+name: phpcs
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - name: Run PHPCS
+        env:
+          magentoUsername: ${{ secrets.magentoUsername }}
+          magentoPassword: ${{ secrets.magentoPassword }}
+        run: |
+          composer config http-basic.repo.magento.com $magentoUsername $magentoPassword
+          composer install --ignore-platform-reqs
+          vendor/bin/phpcs --standard=Magento2 src

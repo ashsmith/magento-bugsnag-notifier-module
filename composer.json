@@ -3,10 +3,14 @@
     "description": "Bugsnag Notifier for Magento 2",
     "type": "magento2-module",
     "require": {
-        "bugsnag/bugsnag": "^3.19"
+        "bugsnag/bugsnag": "^3.19",
+        "magento/framework": "^101||^102",
+        "magento/module-customer": "^101||^102",
+        "magento/module-store": "^101"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^8.5",
+        "magento/magento-coding-standard": "^5.0"
     },
     "license": "MIT",
     "authors": [
@@ -22,5 +26,19 @@
         "psr-4": {
             "Ashsmith\\Bugsnag\\": "src"
         }
+    },
+    "repositories": {
+        "0": {
+            "type": "composer",
+            "url": "https://repo.magento.com/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+          "([ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/)"
+        ],
+        "post-update-cmd": [
+          "([ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/)"
+        ]
     }
 }
