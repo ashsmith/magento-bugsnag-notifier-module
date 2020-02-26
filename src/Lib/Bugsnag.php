@@ -2,12 +2,12 @@
 declare(strict_types=1);
 namespace Ashsmith\Bugsnag\Lib;
 
+use Ashsmith\Bugsnag\Exception\InvalidConfiguration;
 use Magento\Framework\Event\Manager as EventManager;
 use Bugsnag\Client;
 
 class Bugsnag
 {
-
     private $clientFactory;
     private $config;
     private $eventManager;
@@ -33,13 +33,13 @@ class Bugsnag
 
     /**
      * @return \Bugsnag\Client
-     * @throws \Exception
+     * @throws \Ashsmith\Bugsnag\Exception\InvalidConfiguration
      */
     public function init(): Client
     {
         if (!$this->client) {
             if (!$this->config->getApiKey()) {
-                throw new \Exception('No bugsnag configuration has been provided.');
+                throw new InvalidConfiguration('No bugsnag configuration has been provided.');
             }
 
             $bugsnag = $this->clientFactory->make($this->config->getApiKey(), $this->config->getEndpoint());

@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace Ashsmith\Bugsnag\Test\Integration\Lib;
 
 use Magento\Framework\App\DeploymentConfig;
-use Magento\Framework\Module\ModuleList;
 use PHPUnit\Framework\TestCase;
 use Magento\TestFramework\Helper\Bootstrap;
 use Ashsmith\Bugsnag\Lib\Config;
