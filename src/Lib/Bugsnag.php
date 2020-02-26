@@ -43,10 +43,7 @@ class Bugsnag
             }
 
             $bugsnag = $this->clientFactory->make($this->config->getApiKey(), $this->config->getEndpoint());
-            $bugsnag->registerCallback([$this->customerCallback, 'report'])
-                ->registerCallback([$this->magentoCallback, 'report'])
-                ->setReleaseStage($this->config->getReleaseStage())
-                ->startSession();
+            $bugsnag->setReleaseStage($this->config->getReleaseStage())->startSession();
 
             // Custom event to allow developers to extend default bugsnag configuration
             $this->eventManager->dispatch('bugsnag_init', ['client' => $bugsnag]);
@@ -54,5 +51,13 @@ class Bugsnag
         }
 
         return $this->client;
+    }
+
+    public function registerCallbacks($isHttpRequest = false)
+    {
+        $this->client->registerCallback([$this->magentoCallback, 'report']);
+        if ($isHttpRequest) {
+            $this->client->registerCallback([$this->customerCallback, 'report']);
+        }
     }
 }
