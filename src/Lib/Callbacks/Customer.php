@@ -10,11 +10,8 @@ use Magento\Framework\Event\Manager as EventManager;
 
 class Customer implements CallbackInterface
 {
-    /** @var \Magento\Customer\Model\SessionFactory */
     private $sessionFactory;
-    /** @var \Magento\Customer\Api\GroupRepositoryInterface */
     private $customerGroupRepository;
-    /** @var \Magento\Framework\Event\Manager */
     private $eventManager;
 
     public function __construct(

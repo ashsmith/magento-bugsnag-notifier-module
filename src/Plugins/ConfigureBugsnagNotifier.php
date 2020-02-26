@@ -18,13 +18,14 @@ class ConfigureBugsnagNotifier
     /**
      * @param \Ashsmith\Bugsnag\Lib\Bugsnag $bugsnag
      */
-    public function __construct(Bugsnag $bugsnag) {
+    public function __construct(Bugsnag $bugsnag)
+    {
         $this->bugsnag = $bugsnag;
     }
 
     /**
      * @param \Magento\Framework\AppInterface $instance
-     * @throws \Exception
+     * @throws \Ashsmith\Bugsnag\Exception\InvalidConfiguration
      */
     public function beforeLaunch(AppInterface $instance)
     {
@@ -45,7 +46,7 @@ class ConfigureBugsnagNotifier
      * @param \Magento\Framework\AppInterface $instance
      * @param \Magento\Framework\App\Bootstrap $bootstrap
      * @param \Exception $exception
-     * @throws \Exception
+     * @throws \Ashsmith\Bugsnag\Exception\InvalidConfiguration
      */
     public function beforeCatchException(AppInterface $instance, Bootstrap $bootstrap, \Exception $exception)
     {

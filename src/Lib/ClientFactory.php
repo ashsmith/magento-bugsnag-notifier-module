@@ -5,8 +5,6 @@ namespace Ashsmith\Bugsnag\Lib;
 /**
  * Lightweight wrapper around \Bugsnag\Client,
  * mostly for easy mocking in tests.
- *
- * @package Ashsmith\Bugsnag\Lib
  */
 class ClientFactory
 {
