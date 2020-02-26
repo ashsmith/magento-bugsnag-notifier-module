@@ -1,12 +1,16 @@
 # Magento 2 Bugsnag Notifier
 
-This module integrates the Bugsnag notifier into Magento's exception handling. Any exception that is left unhandled and eventually caught within the `Magento\Framework\App\Bootstrap::run` method will be notified to Bugsnag.
+![phpcs](https://github.com/ashsmith/magento-bugsnag-notifier-module/workflows/phpcs/badge.svg)
 
-This works by using two interceptors that are placed before the `launch` and `catchException` methods on any class that implement the `Magento\Framework\AppInterface` interface.
+This module integrates the [Bugsnag](https://www.bugsnag.com) notifier into Magento's exception handling. Any exception that is left unhandled and eventually caught within the `Magento\Framework\App\Bootstrap::run` method will then be notified to Bugsnag.
+
+This works by using two plugins (interceptors) that are placed before the `launch` and `catchException` methods on any class that implement the `Magento\Framework\AppInterface` interface. Within the `beforeLaunch` plugin Bugsnag is initialised and a session is started which means within the Bugsnag Dashboard you'll be able to see a calculated [stability score](https://www.bugsnag.com/product/stability-score).
+
 
 ## Installation
 
     composer require ashsmith/magento-bugsnag-notifier-module ^1.0.0
+    bin/magento setup:upgrade
 
 ## Configuration
 
