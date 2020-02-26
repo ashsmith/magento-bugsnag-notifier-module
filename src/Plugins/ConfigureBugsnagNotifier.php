@@ -35,6 +35,7 @@ class ConfigureBugsnagNotifier
             return;
         }
         $client = $this->bugsnag->init();
+        $this->bugsnag->registerCallbacks($instance instanceof Http);
         $client->setMetaData([
             'app' => [
                 'request_type' => $this->getRequestType($instance),
