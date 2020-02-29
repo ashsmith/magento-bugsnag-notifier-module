@@ -4,6 +4,7 @@ namespace Ashsmith\Bugsnag\Lib\Callbacks;
 
 use Bugsnag\Report;
 use Magento\Customer\Api\GroupRepositoryInterface;
+use Magento\Customer\Model\Session;
 use Magento\Customer\Model\SessionFactory;
 use Magento\Framework\DataObject;
 use Magento\Framework\Event\Manager as EventManager;
@@ -32,7 +33,11 @@ class Customer implements CallbackInterface
     public function report(Report $report)
     {
         /** @var \Magento\Customer\Model\Session $session */
-        $session = $this->sessionFactory->create();
+        if (!($session = $this->getSession())) {
+            // If a session cannot be retrieved then dont report any user data.
+            return;
+        }
+
         // Create data object so when the event is dispatched developers can modify the object instance
         $data = new DataObject([
             'id' => $session->getSessionId(),
@@ -51,5 +56,15 @@ class Customer implements CallbackInterface
         // Integration point to add more detailed customer information
         $this->eventManager->dispatch('bugsnag_add_customer_data', ['data' => $data]);
         $report->setUser($data->toArray());
+    }
+
+    private function getSession(): ?Session
+    {
+        try {
+            return $this->sessionFactory->create();
+        } catch (\Magento\Framework\Exception\SessionException $sessionException) {
+            // Exception is thrown when the app area code hasn't been set.
+            return null;
+        }
     }
 }
