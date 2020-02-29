@@ -9,6 +9,7 @@ class Config
     const CONFIG_PATH_API_KEY = 'bugsnag/api_key';
     const CONFIG_PATH_ENDPOINT = 'bugsnag/endpoint';
     const CONFIG_PATH_RELEASE_STAGE = 'bugsnag/release_stage';
+    const CONFIG_PATH_SESSION_TRACKING = 'bugsnag/session_tracking';
 
     private $deploymentConfig;
 
@@ -46,5 +47,14 @@ class Config
         }
 
         return getenv('BUGSNAG_RELEASE_STAGE') ?: $stage;
+    }
+
+    public function canSendSessions(): bool
+    {
+        if ($this->deploymentConfig->get(self::CONFIG_PATH_SESSION_TRACKING)) {
+            return $this->deploymentConfig->get(self::CONFIG_PATH_SESSION_TRACKING) == 'enabled';
+        }
+
+        return getenv('BUGSNAG_SESSION_TRACKING')  == 'enabled';
     }
 }
