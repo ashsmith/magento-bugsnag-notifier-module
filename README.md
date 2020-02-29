@@ -4,7 +4,7 @@
 
 This module integrates the [Bugsnag](https://www.bugsnag.com) notifier into Magento's exception handling. Any exception that is left unhandled and eventually caught within the `Magento\Framework\App\Bootstrap::run` method will then be notified to Bugsnag.
 
-This works by using two plugins (interceptors) that are placed before the `launch` and `catchException` methods on any class that implement the `Magento\Framework\AppInterface` interface. Within the `beforeLaunch` plugin Bugsnag is initialised and a session is started which means within the Bugsnag Dashboard you'll be able to see a calculated [stability score](https://www.bugsnag.com/product/stability-score).
+This works by using two plugins (interceptors) that are placed before the `launch` and `catchException` methods on any class that implement the `Magento\Framework\AppInterface` interface. Within the `beforeLaunch` plugin Bugsnag is initialised. You can optionally start a session which enables Bugsnag's [stability score](https://www.bugsnag.com/product/stability-score) (requires their Standard package).
 
 
 ## Installation
@@ -16,7 +16,7 @@ This works by using two plugins (interceptors) that are placed before the `launc
 
 To configure the Bugsnag Notifier you have two options:
 
-1) Use the environment variable: `BUGSNAG_API_KEY`, `BUGSNAG_ENDPOINT`, `BUGSNAG_RELEASE_STAGE`
+1) Use the environment variable: `BUGSNAG_API_KEY`, `BUGSNAG_ENDPOINT`, `BUGSNAG_RELEASE_STAGE`, and `BUGSNAG_SESSION_TRACKING`
 
 2) Add the following configuration to: `app/etc/env.php`
 
@@ -26,7 +26,8 @@ return [
     'bugsnag' => [
         'api_key' => 'YOUR API KEY',
         'endpoint' => 'custom endpoint if required',
-        'release_stage' => 'production'
+        'release_stage' => 'production',
+        'session_tracking' => 'enabled',
     ]
 ]
 ```
@@ -34,6 +35,8 @@ return [
 The `endpoint`/`BUGSNAG_ENDPOINT` is optional, and only required if you need to notify a different endpoint, such as a self-hosted edition of Bugsnag.
 
 The `release_stage`/`BUGSNAG_RELEASE_STAGE` will default to `production` so is also optional.
+
+The `session_tracking`/`BUGSNAG_SESSION_TRACKING` will default to disabled. Enabling will send sessions to Bugsnag which can be used to see the health of your application.
 
 
 ## Extending Bugsnag Metadata
@@ -63,7 +66,7 @@ $client->registerCallback(function (\Bugsnag\Report $report) {
         'app' => [
             'new_property' => 'new_value'
         ]
-    ])
+    ]);
 });
 ```
 

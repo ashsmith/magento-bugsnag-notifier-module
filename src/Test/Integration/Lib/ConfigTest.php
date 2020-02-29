@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Ashsmith\Bugsnag\Test\Integration\Lib;
 
 use Magento\Framework\App\DeploymentConfig;
@@ -82,6 +83,36 @@ class ConfigTest extends TestCase
         $this->assertNull($config->getEndpoint());
     }
 
+    public function testCanSendSessionsFromEnvVar()
+    {
+        $_ENV['BUGSNAG_SESSION_TRACKING'] = 'enabled';
+        putenv('BUGSNAG_SESSION_TRACKING=enabled');
+
+        $this->deploymentConfigMock->expects($this->any())
+            ->method('get')
+            ->with(Config::CONFIG_PATH_SESSION_TRACKING)
+            ->willReturn(false);
+        /** @var Config $config */
+        $config = $this->objectManager->create(Config::class, ['deploymentConfig' => $this->deploymentConfigMock]);
+        $this->assertTrue($config->canSendSessions());
+    }
+
+    public function testCanSendSessionsFromConfig()
+    {
+        $this->deploymentConfigMock->method('get')->with(Config::CONFIG_PATH_SESSION_TRACKING)->willReturn('enabled');
+        /** @var Config $config */
+        $config = $this->objectManager->create(Config::class, ['deploymentConfig' => $this->deploymentConfigMock]);
+        $this->assertTrue($config->canSendSessions());
+    }
+
+    public function testCanSendSessionsReturnsFalseWhenUndefined()
+    {
+        $this->deploymentConfigMock->method('get')->with(Config::CONFIG_PATH_SESSION_TRACKING)->willReturn(false);
+        /** @var Config $config */
+        $config = $this->objectManager->create(Config::class, ['deploymentConfig' => $this->deploymentConfigMock]);
+        $this->assertFalse($config->canSendSessions());
+    }
+
     public function testGetReleaseStageFromEnvVar()
     {
         $_ENV['BUGSNAG_RELEASE_STAGE'] = 'tests';
@@ -114,11 +145,16 @@ class ConfigTest extends TestCase
 
     protected function tearDown()
     {
-        unset($_ENV['BUGSNAG_API_KEY'], $_ENV['BUGSNAG_ENDPOINT'], $_ENV['BUGSNAG_RELEASE_STAGE']);
+        unset(
+            $_ENV['BUGSNAG_API_KEY'],
+            $_ENV['BUGSNAG_ENDPOINT'],
+            $_ENV['BUGSNAG_RELEASE_STAGE'],
+            $_ENV['BUGSNAG_SESSION_TRACKING']
+        );
         putenv('BUGSNAG_API_KEY');
         putenv('BUGSNAG_ENDPOINT');
         putenv('BUGSNAG_RELEASE_STAGE');
-
+        putenv('BUGSNAG_SESSION_TRACKING');
         parent::tearDown();
     }
 }
