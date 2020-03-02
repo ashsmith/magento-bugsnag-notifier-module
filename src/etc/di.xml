@@ -3,4 +3,10 @@
     <type name="Magento\Framework\AppInterface">
         <plugin name="bugsnag_setup" type="Ashsmith\Bugsnag\Plugins\ConfigureBugsnagNotifier" />
     </type>
+    <type name="Ashsmith\Bugsnag\Lib\Callbacks\Magento">
+        <arguments>
+            <argument name="runMode" xsi:type="init_parameter">Magento\Store\Model\StoreManager::PARAM_RUN_TYPE</argument>
+            <argument name="scopeCode" xsi:type="init_parameter">Magento\Store\Model\StoreManager::PARAM_RUN_CODE</argument>
+        </arguments>
+    </type>
 </config>

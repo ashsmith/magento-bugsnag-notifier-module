@@ -6,23 +6,25 @@ use Bugsnag\Report;
 use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class Magento implements CallbackInterface
 {
     private $metadata;
     private $appState;
-    private $storeManager;
+    private $runMode;
+    private $scopeCode;
 
     public function __construct(
         ProductMetadataInterface $metadata,
         State $appState,
-        StoreManagerInterface $storeManager
+        $runMode = ScopeInterface::SCOPE_STORE,
+        $scopeCode = null
     ) {
         $this->metadata = $metadata;
         $this->appState = $appState;
-        $this->storeManager = $storeManager;
+        $this->runMode = $runMode;
+        $this->scopeCode = $scopeCode;
     }
 
     public function report(Report $report)
@@ -32,7 +34,8 @@ class Magento implements CallbackInterface
                 'version' => $this->metadata->getVersion(),
                 'edition' => $this->metadata->getEdition(),
                 'area_code' => $this->getAreaCode(),
-                'store_code' => $this->getStoreCode(),
+                'run_mode' => $this->runMode,
+                'store_code' => $this->scopeCode,
             ],
         ]);
     }
@@ -44,15 +47,6 @@ class Magento implements CallbackInterface
         } catch (LocalizedException $exception) {
             // The application didn't make it far enough to set the area code!
             return 'not set';
-        }
-    }
-
-    private function getStoreCode(): string
-    {
-        try {
-            return $this->storeManager->getStore()->getCode();
-        } catch (NoSuchEntityException $exception) {
-            return 'no such store found';
         }
     }
 }
