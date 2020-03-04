@@ -44,14 +44,14 @@ class Bugsnag
 
             $bugsnag = $this->clientFactory->make($this->config->getApiKey(), $this->config->getEndpoint());
             $bugsnag->setReleaseStage($this->config->getReleaseStage());
+            // Custom event to allow developers to extend default bugsnag configuration
+            $this->eventManager->dispatch('bugsnag_init', ['client' => $bugsnag]);
 
             // Sending sessions to bugsnag requires their Standard plan.
             if ($this->config->canSendSessions()) {
                 $bugsnag->startSession();
             }
 
-            // Custom event to allow developers to extend default bugsnag configuration
-            $this->eventManager->dispatch('bugsnag_init', ['client' => $bugsnag]);
             $this->client = $bugsnag;
         }
 
