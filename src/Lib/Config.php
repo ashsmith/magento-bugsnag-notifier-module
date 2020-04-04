@@ -6,6 +6,7 @@ use Magento\Framework\App\DeploymentConfig;
 
 class Config
 {
+    const CONFIG_PATH_ENABLED = 'bugsnag/enabled';
     const CONFIG_PATH_API_KEY = 'bugsnag/api_key';
     const CONFIG_PATH_ENDPOINT = 'bugsnag/endpoint';
     const CONFIG_PATH_RELEASE_STAGE = 'bugsnag/release_stage';
@@ -16,6 +17,15 @@ class Config
     public function __construct(DeploymentConfig $deploymentConfig)
     {
         $this->deploymentConfig = $deploymentConfig;
+    }
+
+    public function isEnabled(): bool
+    {
+        if ($this->deploymentConfig->get(self::CONFIG_PATH_ENABLED)) {
+            return (bool) $this->deploymentConfig->get(self::CONFIG_PATH_ENABLED);
+        }
+
+        return (bool) getenv('BUGSNAG_ENABLED') ?: false;
     }
 
     public function getApiKey(): ?string

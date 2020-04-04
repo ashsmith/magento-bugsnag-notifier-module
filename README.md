@@ -16,7 +16,13 @@ This works by using two plugins (interceptors) that are placed before the `launc
 
 To configure the Bugsnag Notifier you have two options:
 
-1) Use the environment variable: `BUGSNAG_API_KEY`, `BUGSNAG_ENDPOINT`, `BUGSNAG_RELEASE_STAGE`, and `BUGSNAG_SESSION_TRACKING`
+1) Use the following environment variables:
+
+- `BUGSNAG_ENABLED=1` 1 or 0 to enable/disable.
+- `BUGSNAG_API_KEY=[your api key]`
+- `BUGSNAG_ENDPOINT=[custom host if required]` (optional)
+- `BUGSNAG_RELEASE_STAGE=[your environment/release stage (production/staging etc)`
+- `BUGSNAG_SESSION_TRACKING=enabled` (Optional. Requires Bugsnag Standard package)
 
 2) Add the following configuration to: `app/etc/env.php`
 
@@ -24,6 +30,7 @@ To configure the Bugsnag Notifier you have two options:
 return [
     ...
     'bugsnag' => [
+        'enabled' => '1',
         'api_key' => 'YOUR API KEY',
         'endpoint' => 'custom endpoint if required',
         'release_stage' => 'production',
@@ -32,19 +39,13 @@ return [
 ]
 ```
 
-The `endpoint`/`BUGSNAG_ENDPOINT` is optional, and only required if you need to notify a different endpoint, such as a self-hosted edition of Bugsnag.
-
-The `release_stage`/`BUGSNAG_RELEASE_STAGE` will default to `production` so is also optional.
-
-The `session_tracking`/`BUGSNAG_SESSION_TRACKING` will default to disabled. Enabling will send sessions to Bugsnag which can be used to see the health of your application.
-
 
 ## Extending Bugsnag Metadata
 
-If you wish to send additional data to Bugsnag that may help debug your Magento application, there are two events dispatched by this module which can be used to add additionaal metadata.
+If you wish to send additional data to Bugsnag that may help debug your Magento application, there are two events dispatched by this module which can be used to add additional metadata.
 
 ### Event: `bugsnag_init`
-`bugsnag_init` is dispatched when the module first initialises Bugsnag and a session is started. You'll be able to retrive the Bugsnag client by doing: `$observer->getData('client')` which will give you an instance of `\Bugsnag\Client`. From there adding metadata can be done like so:
+`bugsnag_init` is dispatched when the module first initialises Bugsnag and a session is started. You'll be able to retrieve the Bugsnag client by doing: `$observer->getData('client')` which will give you an instance of `\Bugsnag\Client`. From there adding metadata can be done like so:
 
 ```php
 /** @var \Bugsnag\Client $client */
