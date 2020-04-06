@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace Ashsmith\Bugsnag\Plugins;
 
 use Ashsmith\Bugsnag\Lib\Bugsnag;
+use Ashsmith\Bugsnag\Lib\Config;
 use Bugsnag\Report;
 use Magento\Framework\App\Bootstrap;
 use Magento\Framework\App\Http;
@@ -14,13 +15,16 @@ class ConfigureBugsnagNotifier
 {
     /** @var \Ashsmith\Bugsnag\Lib\Bugsnag */
     private $bugsnag;
+    /** @var \Ashsmith\Bugsnag\Lib\Config */
+    private $config;
 
     /**
      * @param \Ashsmith\Bugsnag\Lib\Bugsnag $bugsnag
      */
-    public function __construct(Bugsnag $bugsnag)
+    public function __construct(Bugsnag $bugsnag, Config $config)
     {
         $this->bugsnag = $bugsnag;
+        $this->config = $config;
     }
 
     /**
@@ -34,6 +38,11 @@ class ConfigureBugsnagNotifier
         if ($instance instanceof \Magento\Framework\App\Cron) {
             return;
         }
+
+        if (!$this->config->isEnabled()) {
+            return;
+        }
+
         $client = $this->bugsnag->init();
         $this->bugsnag->registerCallbacks($instance instanceof Http);
         $client->setMetaData([
@@ -51,6 +60,9 @@ class ConfigureBugsnagNotifier
      */
     public function beforeCatchException(AppInterface $instance, Bootstrap $bootstrap, \Exception $exception)
     {
+        if (!$this->config->isEnabled()) {
+            return;
+        }
         $client = $this->bugsnag->init();
         $report = Report::fromPHPThrowable($client->getConfig(), $exception);
         $report->setSeverity('error');
