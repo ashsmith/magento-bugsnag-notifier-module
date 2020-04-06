@@ -9,7 +9,7 @@ This works by using two plugins (interceptors) that are placed before the `launc
 
 ## Installation
 
-    composer require ashsmith/magento-bugsnag-notifier-module ^1.0.0
+    composer require ashsmith/magento-bugsnag-notifier-module ^2.0.0
     bin/magento setup:upgrade
 
 ## Configuration
