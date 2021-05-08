@@ -3,10 +3,11 @@
     "description": "Bugsnag Notifier for Magento 2",
     "type": "magento2-module",
     "require": {
+        "composer/composer": "^1.10.22",
         "bugsnag/bugsnag": "^3.19",
-        "magento/framework": "^101||^102",
-        "magento/module-customer": "^101||^102",
-        "magento/module-store": "^101"
+        "magento/framework": "^101||^102||^103",
+        "magento/module-customer": "^101||^102||^103",
+        "magento/module-store": "^101||^102"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.5",
